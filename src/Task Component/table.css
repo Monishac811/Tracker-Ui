@@ -1,0 +1,119 @@
+.table {
+  font-family: Arial, Helvetica, sans-serif;
+  width: 100%;
+  border-collapse: collapse;
+  margin-left: 80px;
+  margin-right: 250px;
+  max-width: 1100px;
+  background-color: white;
+  
+ 
+}
+.tableheading {
+  font-family: Arial, Helvetica, sans-serif;
+  width: 100%;
+  border-collapse: collapse;
+  margin-left: 80px;
+  margin-right: 250px;
+  max-width: 1100px;
+  background-color: white;
+ 
+  
+ 
+}
+
+
+th {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  text-align: left;
+  background-color: grey;
+  color: rgb(17, 16, 16);
+  width: 18.7%;
+}
+
+tr:hover {
+  background-color:#DADADA;
+}
+
+td {
+  
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+  width: 10%;
+  
+}
+th{
+  
+  text-align: center;
+  width: 20%;
+}
+
+.add{
+  margin-left: 5px;
+}
+
+#CommentsAdded {
+  width: 50%;
+  margin-left:-17px;
+  height: 15px;
+  border: none;
+  font-size: 13px;
+}
+
+.DeleteButton{
+  margin-left: 5%;
+}
+
+#suggestions{
+  width: 50%;
+  margin-left:-13px;
+  height: 15px;
+  border: none;
+  font-size: 13px;
+ 
+  
+  
+}
+
+.font{
+  font-size: 13px;
+}
+
+.name{
+width: 8%;
+ cursor: pointer;
+ font-family: 'Roboto';
+ color:black;
+ position: absolute;
+ background-color: gray;
+ font-size: 13px;
+ padding: 0%;
+ margin: 0%;
+ /* position: absolute;
+ z-index: 100;
+ overflow-y: auto;
+ margin: 0%;
+ padding: 0%;
+ list-style: none; */
+ 
+ /* border-right:  solid black;
+ border-left:  solid black;
+ border-bottom:  solid black; */ 
+}
+.name:hover{
+  color: blue;
+}
+
+
+
+
+
+
+
+
+
+
+
+ 
