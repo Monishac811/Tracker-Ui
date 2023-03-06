@@ -18,21 +18,29 @@ import Testtable from './Test Components/testtable';
 import Test1 from './Test Components/Test1';
 import Test2 from './Test Components/Test2';
 import Component1 from './Test Components/Component1';
-import Loginform from './Login Component/Loginform';
+
 import PostForm from './Postform Component/PostForm';
 import Login from './Test Components/Login';
 import Suggestions from './Test Components/Suggestions';
 import Test3 from './Test Components/Test3';
 import Test4 from './Test Components/Test4';
 import Test5 from './Test Components/Test5';
-
+import ABC from './Test Components/ABC';
+import Loginform from './Login Component/Loginform';
+import { Register } from './Test Components/Register';
+import { Registerform } from './Register Component/Registerform';
 
 
 function App() {
+  
+
+
+
   return (
     <>
     <Routes>
-      <Route path="/" element={<Loginform/>} />
+    <Route path="/" element={<Registerform/>} />
+      <Route path="/login" element={<Loginform/>} />
       <Route path="/details" element={<Details/>} />
       <Route path="/incident" element={<Incident/>} />
       <Route path="/request" element={<Request/>} />
@@ -49,7 +57,8 @@ function App() {
     {/* <Component1/> */}
     {/* {<Login />} */}
     {/* <Suggestions/> */}
-    {/* <Test1 /> */}
+    {/* <ABC /> */}
+    {/* <Registerform/> */}
     </>
   );
 

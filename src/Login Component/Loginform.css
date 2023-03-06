@@ -46,7 +46,7 @@ h3{
     
 }
 
-#text {
+#text,#password {
     width: 356px;
     height: 30px;
     border: none;

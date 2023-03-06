@@ -48,7 +48,7 @@ const PostForm = () => {
        <div>
         <h2 className='heading'>Tracker</h2>
         <span className='unit2'>User:{username}</span>
-        <span className="unit1"><Link to='/' className="logout">Logout</Link></span>
+        <span className="unit1"><Link to='/login' className="logout">Logout</Link></span>
         <span className='unit3'><Link to='/incident' className='opentask'>OpenTasks</Link></span>
         
         <form onSubmit={(e)=>submit(e)}>

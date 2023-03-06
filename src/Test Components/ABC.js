@@ -6,7 +6,7 @@ import '../Task Component/Details.css';
 import moment from 'moment';
 
 
-const Incident = () => {
+const ABC = () => {
     let date = moment().format("MMMM Do YYYY, h:mm:ss a")
 
     const username=localStorage.getItem("user");
@@ -16,14 +16,27 @@ const Incident = () => {
 
     const[details,setDetails]= useState([]);
     const[error,setError]= useState('');
-    const [comments,setComments]=useState('');
+    const [data,setData]=useState({
+        CommentsAdded:"",
+        Username:username,
+        UpdatedTime:date,   
+    });
     
     const [actions,setActions]=useState([]);
 
     const [selectedState,setSelectedState]=useState('');
-
-    const [selectedUserId,setSelectedUserId]=useState('')
+    // console.log(selectedState);
     
+    // const [users,setUsers]= useState([]);
+    
+
+    // useEffect(()=>{
+    //     const loadUsers=async()=>{
+    //         const response=await axios.get('https://reqres.in/api/users');
+    //         setUsers(response.data.data)
+    //     }
+    //     loadUsers();
+    // })
    
 
     useEffect(() => {
@@ -44,7 +57,7 @@ const Incident = () => {
 
     useEffect(() => {
         axios
-        .get('http://localhost:8082/task/INC')
+        .get('http://localhost:8082/task')
         .then(res =>{
         console.log(res.data.data);
         setDetails(res.data.data);
@@ -55,81 +68,59 @@ const Incident = () => {
     },[]);
 
 
-const handleComments=(e,actions,{description},{taskId})=>{
-     e.preventDefault();
+const handleSubmit=(e,{description})=>{
+    const url='http://localhost:8082/task/create'
+    e.preventDefault();
 
-    const url='http://localhost:8082/task/update';
+        axios.post(url,{
+           CommentsAdded:data.CommentsAdded,
+           IncidentNo:description,
+        })
+        .then(response=>{
+            console.log(response.status);
+            console.log(response.data);
+        })   
+}
+const handleButton=(e,actions,{taskId},{description})=>{
+    const url='http://localhost:8082/task/update'
 
     const taskid=JSON.parse(`${taskId}`);
     console.log(taskid);
-
-    {actions.map((user)=>{
-        const {userId} = user;
-        const userid=JSON.parse(`${userId}`);
-        console.log(userid);
-    if(comments.length>0){
-        axios.put(url,{
-            
-            taskId:taskid,
-            description:description,
-            comments:comments,
-            assignedTo:userid,
-    
-        })
-        .then(response=>{
-            console.log(response.status);
-            console.log(response.data);
-        })  
-    }
-        
-    
-       })}
-}
-
-
-const handleAssignTo=(e,{taskId},actions,{description})=>{
-    e.preventDefault();
-    const url='https://jsonplaceholder.typicode.com/posts/'
-
-    const value=JSON.parse(`${taskId}`);
-    console.log(value);
-
-    const arr=[]
-
-    {actions.map((user)=>{
-        const {userId} = user;
-        return arr.push(userId)
-    })}
-
-    console.log(arr)
    
-   
-        axios.post(url,{
-            assignedTo:selectedState,
-            taskId:value,
-            description:description,
-        })
-        .then(response=>{
-            console.log(response.status);
-            console.log(response.data);
-            console.log({taskId})
-        })   
+   {actions.map((user)=>{
+    const {userId} = user;
+    const userid=JSON.parse(`${userId}`);
+    console.log(userid);
+
+    axios.put(url,{
+        assignedTo:userid,
+        taskId:taskid,
+        IncidentNo:description,
+    })
+    .then(response=>{
+        console.log(response.status);
+        console.log(response.data);
+    })  
+
+   })}
+         
 }
         
 
-const handle = (e)=>{
-    setComments(e.target.value);
+function handle(e,post){
+    const newdata={...data,...post}
+    newdata[e.target.id]  = e.target.value;
+    setData(newdata);
+    // console.log(newdata);
 }
 
 
 
-const handleSelectedState=(e)=>{
+
+const handleSelectedState=(e)=>
+{
 setSelectedState(e.target.value);
-}
-  
-
-
-
+  }
 
 const handleDetele=({taskId},e)=>{
     // e.preventDefault();
@@ -177,9 +168,9 @@ const handleDetele=({taskId},e)=>{
        <table className='tableheading'>
        <thead>
                  <tr>
-                    <th id="th">Incidents</th>
-                    <th id="th">Comments</th>
-                    <th id="th">AssignedTo</th>
+                    <th>Incidents</th>
+                    <th>Comments</th>
+                    <th>AssignedTo</th>
                     <th>Comments Actions</th>
                     <th>AssignTo</th>
                     
@@ -192,29 +183,29 @@ const handleDetele=({taskId},e)=>{
 
 
        {details.map((post)=>{
-        const {taskId,description,assignedTo,comments} = post;
+        const {taskId,description,assignedTo} = post;
         return <div>
            
             <table className='table'>
                 <tbody>
                 <tr key={taskId}>
                     <td className='font'>{description}</td>
-                    <td className='font'>{comments}</td>
                     <td className='font'>{assignedTo}</td>
+                    <td className='font'></td>
                     <td>
                         <div>
-                        <input type="text" className='follow' id="CommentsAdded" onChange={(e)=>handle(e)} placeholder='Enter Comments...'></input>
-                        <button className='add'onClick={(e)=>handleComments(e,actions,{description},{taskId},{assignedTo},{comments})}>Add</button>  
+                        <input type="text" className='follow' onChange={(e)=>handle(e,{post})} id="CommentsAdded" value={data.CommentsAdded.id} placeholder='Enter Comments...'></input>
+                        <button className='add'onClick={(e)=>handleSubmit(e,{description})}>Add</button>  
                         </div>
                     </td>
                     <td>
-                        <select value={selectedState.id} onChange={(e)=>handleSelectedState(e,actions)}>
+                        <select value={selectedState.id} onChange={(e)=>handleSelectedState(e,{description})}>
                             <option>Select</option>
                             {
                                 
                                 actions.map((user)=>{
-                                    const {userId,email,firstName,lastName} = user;
-                                    return <option key={userId}>{lastName},{firstName}</option>
+                                    const {userId,email} = user;
+                                    return <option>{email}</option>
 
                                 })
                             }
@@ -222,7 +213,7 @@ const handleDetele=({taskId},e)=>{
                         </select>           
                         
                 
-                        <button type='submit' onClick={(e)=>handleAssignTo(e,{taskId},actions,{description})} className='add'>Submit</button>  
+                        <button type='submit' onClick={(e)=>handleButton(e,actions,{taskId},{description})} className='add'>Submit</button>  
 
                         <button className='DeleteButton' onClick={(e)=>handleDetele({taskId},e)}>X</button>
                         
@@ -239,4 +230,4 @@ const handleDetele=({taskId},e)=>{
     );
     
 }
-export default Incident;
+export default ABC;
