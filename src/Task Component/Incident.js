@@ -44,7 +44,7 @@ const Incident = () => {
 
     useEffect(() => {
         axios
-        .get('http://localhost:8082/task')
+        .get('http://localhost:8082/task/INC')
         .then(res =>{
         console.log(res.data.data);
         setDetails(res.data.data);
