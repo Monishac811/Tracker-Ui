@@ -15,39 +15,31 @@ const Incident = () => {
     const url ='https://jsonplaceholder.typicode.com/posts/';
 
     const[details,setDetails]= useState([]);
-    const [selectedIndex,setSelectedIndex]=useState('');
     const[error,setError]= useState('');
-    const [data,setData]=useState({
-        CommentsAdded:"",
-        Username:username,
-        UpdatedTime:date,   
-    });
+    const [comments,setComments]=useState('');
     
-    const [actions,setActions]=useState(['Select',"Sathish","Vaishali","Monisha","Ajith","Karthick"]);
-
-    const [actionsList,setActionList]=useState({
-        "Status":['Select','Open','Progress','Closed'],
-        "AssignTo":['Select',"Sathish","Vaishali","Monisha"]
-    });
+    const [actions,setActions]=useState([]);
 
     const [selectedState,setSelectedState]=useState('');
-    // console.log(selectedState);
 
-    const [selectedList,setSelectedList]=useState('');
-    // console.log(selectedList);
+    const [selectedUserId,setSelectedUserId]=useState('')
     
-    const [users,setUsers]= useState([]);
-    const [text,setText]=useState('');
-    
-    const[suggestions,setSuggestions]=useState([]);
+   
 
-    useEffect(()=>{
-        const loadUsers=async()=>{
-            const response=await axios.get('https://reqres.in/api/users');
-            setUsers(response.data.data)
-        }
-        loadUsers();
+    useEffect(() => {
+        axios
+        .get('http://localhost:8082/user')
+        .then(res =>{
+        console.log(res.data.data);
+        setActions(res.data.data);
     })
+        .catch((error)=>{
+            setError(error.message)
+            
+        })
+    },[]);
+    console.log(actions)
+    
     
 
     useEffect(() => {
@@ -63,81 +55,90 @@ const Incident = () => {
     },[]);
 
 
-const handleSubmit=(e,{description})=>{
-    const url='http://localhost:8082/task/create'
-    e.preventDefault();
+const handleComments=(e,actions,{description},{taskId})=>{
+     e.preventDefault();
 
-        axios.post(url,{
-           CommentsAdded:data.CommentsAdded,
-           IncidentNo:description,
+    const url='http://localhost:8082/task/update';
+
+    const taskid=JSON.parse(`${taskId}`);
+    console.log(taskid);
+
+    {actions.map((user)=>{
+        const {userId} = user;
+        const userid=JSON.parse(`${userId}`);
+        console.log(userid);
+    if(comments.length>0){
+        axios.put(url,{
+            
+            taskId:taskid,
+            description:description,
+            comments:comments,
+            assignedTo:userid,
+    
         })
         .then(response=>{
             console.log(response.status);
             console.log(response.data);
-        })   
+        })  
+    }
+        
+    
+       })}
 }
-const handleButton=(e,{description})=>{
-    const url='http://localhost:8082/task/create'
+
+
+const handleAssignTo=(e,{taskId},actions,{description})=>{
     e.preventDefault();
+    const url='https://jsonplaceholder.typicode.com/posts/'
+
+    const value=JSON.parse(`${taskId}`);
+    console.log(value);
+
+    const arr=[]
+
+    {actions.map((user)=>{
+        const {userId} = user;
+        return arr.push(userId)
+    })}
+
+    console.log(arr)
+   
    
         axios.post(url,{
-           AssignedToName:selectedState,
-           IncidentNo:description,
+            assignedTo:selectedState,
+            taskId:value,
+            description:description,
         })
         .then(response=>{
             console.log(response.status);
             console.log(response.data);
+            console.log({taskId})
         })   
 }
         
 
-function handle(e,post){
-    const newdata={...data,...post}
-    newdata[e.target.id]  = e.target.value;
-    setData(newdata);
-    // console.log(newdata);
+const handle = (e)=>{
+    setComments(e.target.value);
 }
 
 
-const onChangeHandler=(text)=>{
-    let matches = []
-    if( text.length > 0){
-        matches = users.filter((user,i) => {
-            const regex = new RegExp(`${text}`,"gi");
-            return user.email.match(regex)
-        })
-    }
-    // console.log('matches found:',matches);
-    setSuggestions(matches);
-    setText(text);
-}
-const onSuggestHandler=(text)=> {
-    setText(text);
-    setSuggestions([]);
 
-}
-
-const handleSelectedState=(e,{description})=>{
+const handleSelectedState=(e)=>{
 setSelectedState(e.target.value);
-// axios.post(url,{
-//     AssignTo:e.target.value,
-//     IncidentNo:description,
-//  })
-//  .then(response=>{
-//      console.log(response.status);
-//      console.log(response.data);
-//  })   
-
 }
+  
 
-const handleDetele=({id},e)=>{
+
+
+
+const handleDetele=({taskId},e)=>{
     // e.preventDefault();
-    console.log({id})
-    const value=JSON.parse(`${id}`);
+    console.log({taskId})
+    const value=JSON.parse(`${taskId}`);
     console.log(value);
     
     axios.delete('http://localhost:8082/task/delete',{
-       data:{id:value} ,
+       data:{taskId:value} ,
     })
      .then(response=>{
          console.log(response.status);
@@ -171,13 +172,14 @@ const handleDetele=({id},e)=>{
         <br/>
         <br/>
         <br/>
+
       
        <table className='tableheading'>
        <thead>
                  <tr>
-                    <th>Incidents</th>
-                    <th>Comments</th>
-                    <th>AssignedTo</th>
+                    <th id="th">Incidents</th>
+                    <th id="th">Comments</th>
+                    <th id="th">AssignedTo</th>
                     <th>Comments Actions</th>
                     <th>AssignTo</th>
                     
@@ -185,36 +187,44 @@ const handleDetele=({id},e)=>{
                 </tr>
             </thead>
             </table>
+
+
+
+
        {details.map((post)=>{
-        const {id,description} = post;
+        const {taskId,description,assignedTo,comments} = post;
         return <div>
            
             <table className='table'>
                 <tbody>
-                <tr key={id}>
+                <tr key={taskId}>
                     <td className='font'>{description}</td>
-                    <td className='font'></td>
-                    <td className='font'></td>
+                    <td className='font'>{comments}</td>
+                    <td className='font'>{assignedTo}</td>
                     <td>
                         <div>
-                        <input type="text" className='follow' onChange={(e)=>handle(e,{post})} id="CommentsAdded" value={data.CommentsAdded.id} placeholder='Enter Comments...'></input>
-                        <button className='add'onClick={(e)=>handleSubmit(e,{description})}>Add</button>  
+                        <input type="text" className='follow' id="CommentsAdded" onChange={(e)=>handle(e)} placeholder='Enter Comments...'></input>
+                        <button className='add'onClick={(e)=>handleComments(e,actions,{description},{taskId},{assignedTo},{comments})}>Add</button>  
                         </div>
                     </td>
                     <td>
-                        <select value={selectedState.id} onChange={(e)=>handleSelectedState(e,{description})}>
+                        <select value={selectedState.id} onChange={(e)=>handleSelectedState(e,actions)}>
+                            <option>Select</option>
                             {
-                                actions.map(state=>{
-                                    return <option>{state}</option>
+                                
+                                actions.map((user)=>{
+                                    const {userId,email,firstName,lastName} = user;
+                                    return <option key={userId}>{lastName},{firstName}</option>
+
                                 })
                             }
                         
                         </select>           
                         
                 
-                        <button type='submit' onClick={(e)=>handleButton(e,{description})} className='add'>Submit</button>  
+                        <button type='submit' onClick={(e)=>handleAssignTo(e,{taskId},actions,{description})} className='add'>Submit</button>  
 
-                        <button className='DeleteButton' onClick={(e)=>handleDetele({id},e)}>X</button>
+                        <button className='DeleteButton' onClick={(e)=>handleDetele({taskId},e)}>X</button>
                         
                         
                         
