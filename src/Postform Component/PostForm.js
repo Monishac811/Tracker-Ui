@@ -3,6 +3,8 @@ import Axios from 'axios';
 import { Link } from 'react-router-dom';
 import './PostForm.css';
 import moment from 'moment';
+import { useNavigate } from "react-router-dom";
+import logo from './profile2.jpg'
 
 
 const PostForm = () => {
@@ -43,12 +45,22 @@ const PostForm = () => {
         setData(newdata);
         // console.log(newdata);
     }
+
+    const navigate = useNavigate();
+
+    const handleLogout=()=>{
+        navigate('/');
+        
+    }
     
     return(  
        <div>
         <h2 className='heading'>Tracker</h2>
-        <span className='unit2'>User:{username}</span>
-        <span className="unit1"><Link to='/login' className="logout">Logout</Link></span>
+        <select className='unit2' onChange={handleLogout}>
+        <option id="option" selected disabled hidden>{username}</option>
+            <option id="option">Logout</option>
+        </select>
+        {/* <span className="unit1"><Link to='/' className="logout">Logout</Link></span> */}
         <span className='unit3'><Link to='/incident' className='opentask'>OpenTasks</Link></span>
         
         <form onSubmit={(e)=>submit(e)}>

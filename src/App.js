@@ -29,6 +29,7 @@ import ABC from './Test Components/ABC';
 import Loginform from './Login Component/Loginform';
 import { Register } from './Test Components/Register';
 import { Registerform } from './Register Component/Registerform';
+import Test6 from './Test Components/Test6';
 
 
 function App() {
@@ -39,8 +40,8 @@ function App() {
   return (
     <>
     <Routes>
-    <Route path="/" element={<Registerform/>} />
-      <Route path="/login" element={<Loginform/>} />
+    <Route path="/" element={<Loginform/>} />
+      <Route path="/register" element={<Registerform/>} />
       <Route path="/details" element={<Details/>} />
       <Route path="/incident" element={<Incident/>} />
       <Route path="/request" element={<Request/>} />
@@ -53,7 +54,7 @@ function App() {
     {/* <Followup /> */}
     {/* <Followup/> */}
     {/* <Loginform/> */}
-    {/* { <Test2/> } */} 
+    {/* { <Test1/> }  */}
     {/* <Component1/> */}
     {/* {<Login />} */}
     {/* <Suggestions/> */}

@@ -32,7 +32,7 @@ export const Registerform = (props) => {
             alert("Registered Successfully");
             console.log(response.status);
             console.log(response.data);
-            navigate('/login')
+            navigate('/')
         })  
     }
     else{
@@ -45,10 +45,10 @@ export const Registerform = (props) => {
 
     const navigate = useNavigate();
   
-    const handleLogin=()=>{
+    // const handleLogin=()=>{
       
-        navigate('/login')
-      }
+    //     navigate('/')
+    //   }
 
     return (
         <div>
@@ -75,9 +75,9 @@ export const Registerform = (props) => {
             <div>
             <button type="submit" id="btn1" onClick={handleSubmit}>Register</button>
             </div>
-            <div>
+            {/* <div>
             <button id="btn2" onClick={handleLogin}>Already have an account? Login here.</button>
-            </div>
+            </div> */}
             <div>
             <div className="footer">Copyright &copy; 2023 Accenture Pvt Limited <span className="tracker">Details Tracker</span>
             </div>
