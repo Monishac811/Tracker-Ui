@@ -32,6 +32,7 @@ function Loginform() {
           console.log(response.status);
           console.log(response.data);
           navigate('/postform');
+        
       })  
   }
   else{
@@ -39,6 +40,12 @@ function Loginform() {
      
   }
   }
+  
+
+  const handleRegister=()=>{
+    navigate('/register');
+  }
+  localStorage.setItem("user",(username));
 
 
   return (
@@ -81,6 +88,15 @@ function Loginform() {
         onClick={handleSubmit}
       >
         Login
+      </button>
+      </div>
+      <div>
+      <button
+        type="submit"
+        id="btn2"
+        onClick={handleRegister}
+      >
+        Click here to Register!!!
       </button>
       </div>
       <div >
