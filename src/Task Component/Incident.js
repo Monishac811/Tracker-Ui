@@ -4,15 +4,20 @@ import '../Task Component/table.css';
 import { Link } from 'react-router-dom';
 import '../Task Component/Details.css';
 import moment from 'moment';
+import Select from "react-select";
+import options from "./options.ts";
 
-
+const SELECT_VALUE_KEY = "MySelectValue";
 const Incident = () => {
     let date = moment().format("MMMM Do YYYY, h:mm:ss a")
+
+    const[action,setAction]=useState(['OPEN','IN PROGRESS','CLOSE','BLOCKED']);
 
     const username=localStorage.getItem("user");
     // console.log(username);
 
     const url ='https://jsonplaceholder.typicode.com/posts/';
+    const [selected, setSelected] = React.useState([]);
 
     const[details,setDetails]= useState([]);
     const [selectedIndex,setSelectedIndex]=useState('');
@@ -21,11 +26,11 @@ const Incident = () => {
         CommentsAdded:"", 
     });
 
-    const getInitialState = () => {
-        const value = "Select";
-        return value;
-      };
-    const [value, setValue] = useState(getInitialState);
+    // const getInitialState = () => {
+    //     const value = "Select";
+    //     return value;
+    //   };
+    const [value, setValue] = useState('');
     
     const [actions,setActions]=useState([]);
 
@@ -43,7 +48,9 @@ const Incident = () => {
     },[]);
     
 
-    const [selectedState,setSelectedState]=useState('');
+    const [selectedStatus,setSelectedStatus]=useState('');
+    const [selectedText,setSelectedText]=useState('');
+    const [ selectedState,setSelectedState]=useState('');
     const [selectedUserid,setSelectedUserid]=useState('');
     // console.log(selectedState);
 
@@ -77,7 +84,7 @@ const Incident = () => {
     },[]);
 
 
-const handleComments=(e,{description},{taskId},{assignedTo})=>{
+const handleComments=(e,{description},{taskId},{assignedTo},{status})=>{
     //e.preventDefault();
     const url ='http://localhost:8082/task/update';
     const newcomments={...data.CommentsAdded,...e.target.value}
@@ -89,6 +96,7 @@ const handleComments=(e,{description},{taskId},{assignedTo})=>{
             description:description,
             taskId:taskId,
             assignedTo:assignedTo,
+            status:status,
          })
          .then(response=>{
              console.log(response.status);
@@ -100,19 +108,21 @@ const handleComments=(e,{description},{taskId},{assignedTo})=>{
 }
 
 const handleChange = (e) => {
-    setValue(e.target.value);
+    setSelected(e.target.value);
+  
   };
 
 
-const handleAssignTo = (e,value,{description},{taskId},{comments})=>{
-
+const handleAssignTo = (e,value,{description},{taskId},{comments},{status})=>{
     e.preventDefault();
+    
     const url ='http://localhost:8082/task/update';
     axios.put(url,{
-        assignedTo:value,
+        assignedTo:selected,
         description:description,
         taskId:taskId,
         comments:comments,
+        status:status,
         
         
      })
@@ -167,6 +177,42 @@ const handleDetele=({taskId},e)=>{
      })   
 }
 
+
+const handleStatus = (e,value,{description},{taskId},{comments},{status}) => {
+    e.preventDefault()
+    const url ='http://localhost:8082/task/update';
+    axios.put(url,{
+        assignedTo:value,
+        description:description,
+        taskId:taskId,
+        comments:comments,
+        status:selectedStatus, 
+        
+     })
+     .then(response=>{
+         console.log(response.status);
+         console.log(response.data);
+     })   
+  }
+
+
+
+
+  const handleSelectedStatus=(e)=>{
+    setSelectedStatus(e.target.value);
+    
+    // axios.post(url,{
+    //     action:e.target.value,
+    //  })
+    //  .then(response=>{
+    //      console.log(response.status);
+    //      console.log(response.data);
+    //  })   
+    
+    }
+  
+
+
     return(
         <>
         <form >
@@ -196,18 +242,18 @@ const handleDetele=({taskId},e)=>{
        <table className='tableheading'>
        <thead>
                  <tr>
-                    <th id="th">Incidents</th>
-                    <th id="th">Comments</th>
-                    <th id="th">AssignedTo</th>
-                    <th>Comments Actions</th>
+                    <th>Incidents</th>
+                    <th>Comments</th>
                     <th>AssignTo</th>
+                    <th>Comments Actions</th>
+                    <th>Status</th>
                     
                         
                 </tr>
             </thead>
             </table>
        {details.map((post)=>{
-        const {id,description,taskId,comments,assignedTo,firstName} = post;
+        const {id,description,taskId,comments,assignedTo,status} = post;
         return <div>
            
             <table className='table'>
@@ -215,33 +261,43 @@ const handleDetele=({taskId},e)=>{
                 <tr key={id}>
                     <td className='font'>{description}</td>
                     <td className='font'>{comments}</td>
-                    <td className='font'>{assignedTo}</td>
+                    <td>
+                    <select  onChange={(e)=>handleChange(e)} onClick={(e)=>handleAssignTo(e,value,{description},{taskId},{comments},{status})}>
+                    
+
+                    {actions.map((user,assignedTo)=>{  
+                        
+                                            
+                        const {userId,email,firstName,lastName} = user;    
+                         return userId===assignedTo?<option key={userId} value={userId} selected>{lastName},{firstName}</option>: <option key={userId} value={userId}>{lastName},{firstName}</option>
+                                            
+                    })}
+                  </select>
+      {/* <p>{`You selected ${value}`}</p> */}
+      {/* <button type='submit' onClick={(e)=>handleAssignTo(e,value,{description},{taskId},{comments},{status})} className='add'>Submit</button> */}    
+                    </td>
+
                     <td>
                         <div>
-                        <input type="text" className='follow' onChange={(e)=>handle(e,{post})} id="CommentsAdded" value={data.CommentsAdded.id} placeholder='Enter Comments...'></input>
-                        <button className='add'onClick={(e)=>handleComments(e,{description},{taskId},{assignedTo})}>Add</button>  
+                        <input type="text" className='follow' defaultValue={comments} onChange={(e)=>handle(e,{post})} id="CommentsAdded" value={data.CommentsAdded.id} placeholder='Enter Comments...'></input>
+                        <button className='add'onClick={(e)=>handleComments(e,{description},{taskId},{assignedTo},{status})}>Add</button>  
                         </div>
                     </td>
-                    <td>
-                    <select value={value.id} onChange={handleChange} defaultValue>
-        <option>Select</option>
-        {
-                                
-                                actions.map((user)=>{
-                                    const {userId,email,firstName,lastName} = user;
-                                    return <option key={userId} value={userId}>{lastName},{firstName}</option>
-
+                     
+                    <td key={taskId}>
+                   
+                    <select value={selectedStatus.id} onChange={handleSelectedStatus} onClick={(e)=>handleStatus(e,value,{description},{taskId},{comments},{assignedTo},{status})}>
+                        <option>{status}</option>
+                            {
+                                action.map(state=>{
+                                    return <option>{state}</option>
                                 })
                             }
-      </select>
-      {/* <p>{`You selected ${value}`}</p> */}
-      <button type='submit' onClick={(e)=>handleAssignTo(e,value,{description},{taskId},{comments})} className='add'>Submit</button>
-
-      <button className='DeleteButton' onClick={(e)=>handleDetele({taskId},e)}>X</button>
                         
-                        
-                        
-                    </td>   
+                        </select>
+                        {/* <button type='submit' onClick={(e)=>handleStatus(e,value,{description},{taskId},{comments},{assignedTo},{status})} className='add'>Submit</button> */}
+                        <button className='DeleteButton' onClick={(e)=>handleDetele({taskId},e)}>X</button>
+      </td>
                  </tr>
              </tbody> 
              </table>
