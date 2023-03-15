@@ -17,7 +17,8 @@ const PostForm = () => {
 
     const [data,setData]=useState({
         username:username,
-        category:"",    
+        category:"",
+        status:"OPEN",    
     });
 
 

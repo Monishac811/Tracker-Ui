@@ -30,6 +30,8 @@ import Loginform from './Login Component/Loginform';
 import { Register } from './Test Components/Register';
 import { Registerform } from './Register Component/Registerform';
 import Test6 from './Test Components/Test6';
+import Test7 from './Test Components/Test7';
+import Test9 from './Test Components/Test9';
 
 
 function App() {
@@ -54,7 +56,7 @@ function App() {
     {/* <Followup /> */}
     {/* <Followup/> */}
     {/* <Loginform/> */}
-    {/* { <Test1/> }  */}
+    {/* { <Test9/> }  */}
     {/* <Component1/> */}
     {/* {<Login />} */}
     {/* <Suggestions/> */}
